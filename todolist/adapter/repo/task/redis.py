@@ -4,15 +4,9 @@ from __future__ import absolute_import
 import inject
 import json
 import redis
-from gxredis import RedisDao, RedisString, RedisHash
 
+from todolist.adapter.redis.task import TaskDao
 from todolist.domain_model.task import Task, TaskStatus, TaskRepository
-
-
-class TaskDao(RedisDao):
-    u""" Task 用の DAO """
-    counter = RedisString("todolist:task:counter")
-    tasks = RedisHash("todolist:task:tasks")
 
 
 class TaskRedisRepository(TaskRepository):
