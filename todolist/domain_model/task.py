@@ -5,33 +5,33 @@ import inject
 from enum import Enum
 
 
-class ItemStatus(Enum):
+class TaskStatus(Enum):
     u""" アイテムステータス """
     todo = "todo"
     done = "done"
 
 
-class Item(object):
+class Task(object):
     u""" アイテム
 
-    :param int item_id: アイテムID
+    :param int task_id: アイテムID
     :param (str|unicode) name: アイテム名
-    :param ItemStatus status: ステータス
+    :param TaskStatus status: ステータス
     """
 
-    def __init__(self, item_id, name, status):
+    def __init__(self, task_id, name, status):
         u""" コンストラクタ
 
-        :param int item_id: アイテムID
+        :param int task_id: アイテムID
         :param (str|unicode) name: アイテム名
-        :param ItemStatus status: ステータス
+        :param TaskStatus status: ステータス
 
         新規のアイテムを作成する際には create メソッドを利用すること
         """
-        assert isinstance(item_id, int)
+        assert isinstance(task_id, int)
         assert isinstance(name, basestring)
-        assert isinstance(status, ItemStatus)
-        self._item_id = item_id
+        assert isinstance(status, TaskStatus)
+        self._task_id = task_id
         self._name = name
         self._status = status
 
@@ -40,16 +40,16 @@ class Item(object):
         u""" アイテムを生成する
 
         :type name: str|unicode
-        :type status: ItemStatus
-        :rtype: Item
+        :type status: TaskStatus
+        :rtype: Task
         """
-        repo = inject.instance(ItemRepository)
-        item_id = repo.generate_id()
-        return cls(item_id, name, ItemStatus.todo)
+        repo = inject.instance(TaskRepository)
+        task_id = repo.generate_id()
+        return cls(task_id, name, TaskStatus.todo)
 
     @property
-    def item_id(self):
-        return self._item_id
+    def task_id(self):
+        return self._task_id
 
     @property
     def name(self):
@@ -61,10 +61,10 @@ class Item(object):
 
     def done(self):
         u""" タスクを終了させる """
-        self._status = ItemStatus.done
+        self._status = TaskStatus.done
 
 
-class ItemRepository(object):
+class TaskRepository(object):
 
     __metaclass__ = ABCMeta
 
@@ -79,20 +79,20 @@ class ItemRepository(object):
     def get_list(self):
         u""" アイテム一覧を取得する
 
-        :rtype: list[Item]
+        :rtype: list[Task]
         """
 
     @abstractmethod
-    def get(self, item_id):
+    def get(self, task_id):
         u""" アイテム一覧を取得する
 
-        :type item_id: int
-        :rtype: Item
+        :type task_id: int
+        :rtype: Task
         """
 
     @abstractmethod
-    def save(self, item):
+    def save(self, task):
         u""" アイテムを保存する
 
-        :type item: Item
+        :type task: Task
         """

@@ -14,14 +14,14 @@ def main():
 
 @main.command()
 def list():
-    click.echo("list items (TBD)")
+    click.echo("list tasks (TBD)")
 
 
 @main.command()
 def add():
-    click.echo("add item (TBD)")
+    click.echo("add task (TBD)")
 
 
 @main.command()
 def done():
-    click.echo("done item (TBD)")
+    click.echo("done task (TBD)")

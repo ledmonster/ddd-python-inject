@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-from todolist.domain_model.item import ItemRepository
-from todolist.adapter.repo.item import ItemMemoryRepository
+from todolist.domain_model.task import TaskRepository
+from todolist.adapter.repo.task import TaskMemoryRepository
 
 
 def config(binder):
-    binder.bind(ItemRepository, ItemMemoryRepository())
+    binder.bind(TaskRepository, TaskMemoryRepository())
