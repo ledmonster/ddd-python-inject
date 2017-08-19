@@ -1,10 +1,15 @@
 # -*- coding: utf-8 -*-
 u""" CLI インタフェース """
+import logging
+
 import click
 import inject
 
 from .config import create_config
 from todolist.domain_model.task import Task, TaskStatus, TaskRepository
+
+
+logging.basicConfig(level=logging.INFO)
 
 
 @click.group()

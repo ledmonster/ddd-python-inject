@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
+import inject
 import pytest
 
+from todolist import testing
 from todolist.adapter.repo.task import (
     TaskMemoryRepository, TaskRedisRepository,
 )
-from todolist.domain_model.task import Task
+from todolist.domain_model.task import Task, TaskRepository
 
 
 class TestTaskRepository(object):
@@ -14,6 +16,7 @@ class TestTaskRepository(object):
         params=[TaskMemoryRepository, TaskRedisRepository])
     def repo(self, request):
         repo = request.param()
+        testing.overwrite_binding(TaskRepository, lambda: repo)
         yield repo
         repo._clear()
 
@@ -24,10 +27,9 @@ class TestTaskRepository(object):
         next_id = repo.generate_id()
         assert next_id == task_id + 1
 
-    def test_create_and_save(self, repo):
-        task = Task.create(u"タスク1", repo)
+    def test_create(self, repo):
+        task = Task.create(u"タスク1")
         assert isinstance(task, Task)
-        repo.save(task)
 
         stored = repo.get(task.task_id)
         assert stored.task_id == task.task_id
@@ -36,19 +38,16 @@ class TestTaskRepository(object):
 
     def test_create_and_get_list(self, repo):
         for i in range(10):
-            task = Task.create("task{}".format(i), repo)
-            repo.save(task)
+            task = Task.create("task{}".format(i))
 
         task_list = repo.get_list()
         assert len(task_list) == 10
 
     def test_rename(self, repo):
-        task = Task.create(u"タスク1", repo)
+        task = Task.create(u"タスク1")
         assert isinstance(task, Task)
-        repo.save(task)
 
         task.rename(u"タスク名変更")
-        repo.save(task)
 
         stored = repo.get(task.task_id)
         assert stored.task_id == task.task_id
