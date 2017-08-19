@@ -4,6 +4,7 @@ import click
 import inject
 
 from .config import create_config
+from todolist.domain_model.task import Task, TaskStatus, TaskRepository
 
 
 @click.group()
@@ -18,14 +19,32 @@ def main():
 
 @main.command()
 def list():
-    click.echo("list tasks (TBD)")
+    repo = inject.instance(TaskRepository)
+    tasks = repo.get_list()
+    for task in tasks:
+        if task.status is TaskStatus.todo:
+            click.echo(u"[ ] #{}: {}".format(task.task_id, task.name))
+        else:
+            click.echo(u"[x] #{}: {}".format(task.task_id, task.name))
 
 
 @main.command()
-def add():
-    click.echo("add task (TBD)")
+@click.option("--name", type=unicode, help="task name", prompt="task name")
+def add(name):
+    repo = inject.instance(TaskRepository)
+    task = Task.create(name)
+    repo.save(task)
+    click.echo(u"#{}: {}".format(task.task_id, task.name))
 
 
 @main.command()
-def done():
-    click.echo("done task (TBD)")
+@click.argument("task_id", type=int)
+def done(task_id):
+    repo = inject.instance(TaskRepository)
+    task = repo.get(task_id)
+    if task is None:
+        click.echo("task not found: #{}".format(task_id))
+    elif task.status is TaskStatus.todo:
+        task.done()
+        repo.save(task)
+    click.echo(u"[x] #{}: {}".format(task.task_id, task.name))

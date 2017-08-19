@@ -3,6 +3,7 @@ u""" Dependency Injection 用の設定関数を提供するモジュール """
 import inject
 import redis
 
+from todolist.adapter.repo.task import TaskRedisRepository
 from todolist.domain_model.task import TaskRepository
 
 
@@ -15,5 +16,5 @@ def create_config(params):
     def config(binder):
         binder.bind(redis.StrictRedis, redis.StrictRedis(
             params['redis_host'], params['redis_port'], params['redis_db']))
-        binder.bind(TaskRepository, TaskRedisRepository())
+        binder.bind_to_constructor(TaskRepository, TaskRedisRepository)
     return config
