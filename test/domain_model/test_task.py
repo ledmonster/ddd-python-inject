@@ -9,6 +9,13 @@ def test_create():
     assert task.status == TaskStatus.todo
 
 
+def test_rename():
+    task = Task.create(u'PyConJP の資料を作る')
+    task.rename(u'PyConJP のスライドを作る')
+    assert task.name == u'PyConJP のスライドを作る'
+
+
 def test_done():
     task = Task.create(u'PyConJP の資料を作る')
     task.done()
+    assert task.status == TaskStatus.done

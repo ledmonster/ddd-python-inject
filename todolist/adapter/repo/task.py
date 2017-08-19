@@ -10,7 +10,7 @@ class TaskMemoryRepository(TaskRepository):
         self._tasks = {}
 
     def generate_id(self):
-        u""" アイテムIDを生成する
+        u""" タスクIDを生成する
 
         :rtype: int
         """
@@ -18,14 +18,14 @@ class TaskMemoryRepository(TaskRepository):
         return self._last_id
 
     def get_list(self):
-        u""" アイテム一覧を取得する
+        u""" タスク一覧を取得する
 
         :rtype: list[Task]
         """
         return self._tasks.values()
 
     def get(self, task_id):
-        u""" アイテム一覧を取得する
+        u""" タスク一覧を取得する
 
         :type task_id: int
         :rtype: Task
@@ -35,13 +35,13 @@ class TaskMemoryRepository(TaskRepository):
         return self._tasks.get(task_id)
 
     def save(self, task):
-        u""" アイテムを保存する
+        u""" タスクを保存する
 
         :type task: Task
         """
         if not isinstance(task, Task):
             raise TypeError("task should be Task")
-        self._tasks[Task.task_id] = Task
+        self._tasks[task.task_id] = task
 
 
 class TaskRedisRepository(TaskRepository):
