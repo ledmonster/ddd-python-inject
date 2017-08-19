@@ -2,6 +2,8 @@
 u""" Dependency Injection 用の設定関数を提供するモジュール """
 import inject
 
+from todolist.domain_model.item import ItemRepository
+
 
 def create_config(params):
     u""" inject 用の config を生成する
@@ -10,5 +12,5 @@ def create_config(params):
     :return function: inject 用の config 関数
     """
     def config(binder):
-        pass
+        binder.bind(ItemRepository, ItemRedisRepository())
     return config

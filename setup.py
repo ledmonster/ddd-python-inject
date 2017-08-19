@@ -9,6 +9,7 @@ setup(
     install_requires=[
         "click",
         "inject",
+        "pytest",
     ],
     license="MIT",
     scripts=["bin/todo"],
