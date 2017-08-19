@@ -9,6 +9,7 @@ setup(
     install_requires=[
         "click",
         "inject",
+        "gxredis",
         "pytest",
     ],
     license="MIT",

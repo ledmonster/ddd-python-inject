@@ -95,7 +95,7 @@ class TaskRepository(object):
         u""" タスク一覧を取得する
 
         :type task_id: int
-        :rtype: Task
+        :rtype: (Task|None)
         """
 
     @abstractmethod

@@ -28,7 +28,7 @@ class TaskMemoryRepository(TaskRepository):
         u""" タスク一覧を取得する
 
         :type task_id: int
-        :rtype: Task
+        :rtype: (Task|None)
         """
         if not isinstance(task_id, int):
             raise TypeError("task_id should be int")
@@ -43,6 +43,6 @@ class TaskMemoryRepository(TaskRepository):
             raise TypeError("task should be Task")
         self._tasks[task.task_id] = task
 
-
-class TaskRedisRepository(TaskRepository):
-    u""" TaskRepository のRedis実装 """
+    def _clear(self):
+        u""" 全データを削除(テスト用) """
+        self._tasks = {}

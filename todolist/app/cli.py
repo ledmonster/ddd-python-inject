@@ -8,7 +8,11 @@ from .config import create_config
 
 @click.group()
 def main():
-    params = {}
+    params = {
+        "redis_host": "localhost",
+        "redis_port": "6379",
+        "redis_db": "2",
+    }
     inject.configure(create_config(params))
 
 

@@ -1,16 +1,21 @@
 # -*- coding: utf-8 -*-
 import pytest
 
-from todolist.adapter.repo.task import TaskMemoryRepository
+from todolist.adapter.repo.task import (
+    TaskMemoryRepository, TaskRedisRepository,
+)
 from todolist.domain_model.task import Task
 
 
-class TestTaskMemoryRepository(object):
-    u""" TaskMemoryRepository のテスト """
+class TestTaskRepository(object):
+    u""" TaskRepository のテスト """
 
-    @pytest.fixture
-    def repo(self):
-        return TaskMemoryRepository()
+    @pytest.fixture(
+        params=[TaskMemoryRepository, TaskRedisRepository])
+    def repo(self, request):
+        repo = request.param()
+        yield repo
+        repo._clear()
 
     def test_generate_id(self, repo):
         task_id = repo.generate_id()
@@ -48,7 +53,3 @@ class TestTaskMemoryRepository(object):
         stored = repo.get(task.task_id)
         assert stored.task_id == task.task_id
         assert stored.name == u"タスク名変更"
-
-
-class TestTaskRedisRepository(object):
-    u""" TaskRedisRepository のテスト """
