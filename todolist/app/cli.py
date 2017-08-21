@@ -6,6 +6,7 @@ import click
 import inject
 
 from .config import create_config
+from .read_model.updater import register_readmodel_updater
 from todolist.domain_model.task import Task, TaskStatus, TaskRepository
 
 
@@ -20,6 +21,7 @@ def main():
         "redis_db": "2",
     }
     inject.configure(create_config(params))
+    register_readmodel_updater()
 
 
 @main.command()
