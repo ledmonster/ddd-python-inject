@@ -60,14 +60,6 @@ class TaskRepository(object):
         """
 
     @abstractmethod
-    def get_list(self, user_id):
-        u""" タスク一覧を取得する
-
-        :type user_id: int
-        :rtype: list[Task]
-        """
-
-    @abstractmethod
     def get(self, user_id, task_id):
         u""" タスクを取得する
 

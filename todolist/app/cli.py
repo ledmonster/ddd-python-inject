@@ -9,6 +9,7 @@ from .config import create_config
 from .read_model.updater import register_readmodel_updater
 from todolist.domain_model.task import Task, TaskStatus, TaskRepository
 from todolist.domain_model.user import UserService
+from todolist.read_model.task import TaskQuery
 
 
 logging.basicConfig(level=logging.INFO)
@@ -27,9 +28,9 @@ def main():
 
 @main.command()
 def list():
-    repo = inject.instance(TaskRepository)
+    query = inject.instance(TaskQuery)
     user = inject.instance(UserService).get_current_user()
-    tasks = repo.get_list(user.user_id)
+    tasks = query.find_by_user_id(user.user_id)
     for task in tasks:
         if task.status is TaskStatus.todo:
             click.echo(u"[ ] #{}: {}".format(task.task_id, task.name))

@@ -24,18 +24,6 @@ class TaskRedisRepository(TaskRepository):
         """
         return self._dao.counter.incr()
 
-    def get_list(self, user_id):
-        u""" タスク一覧を取得する
-
-        :type user_id: int
-        :rtype: list[Task]
-        """
-        assert isinstance(user_id, int)
-        tasks = []
-        json_strs = self._dao.tasks(user_id=user_id).hgetall()
-        values = [json.loads(x.decode('utf-8')) for x in json_strs.values()]
-        return [self._from_dict(x) for x in values]
-
     def get(self, user_id, task_id):
         u""" タスクを取得する
 
@@ -62,7 +50,10 @@ class TaskRedisRepository(TaskRepository):
 
     def _from_dict(self, value):
         return Task(
-            value['task_id'], value.get('user_id', 1), value['name'], TaskStatus(value['status']))
+            task_id=value['task_id'],
+            user_id=value.get('user_id', 1),
+            name=value['name'],
+            status=TaskStatus(value['status']))
 
     def _to_dict(self, task):
         return {

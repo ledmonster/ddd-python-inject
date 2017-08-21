@@ -36,13 +36,6 @@ class TestTaskRepository(object):
         assert stored.name == task.name
         assert stored.status == task.status
 
-    def test_create_and_get_list(self, repo):
-        for i in range(10):
-            task = Task.create(1, "task{}".format(i))
-
-        task_list = repo.get_list(user_id=1)
-        assert len(task_list) == 10
-
     def test_rename(self, repo):
         task = Task.create(1, u"タスク1")
         assert isinstance(task, Task)

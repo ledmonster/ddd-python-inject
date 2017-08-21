@@ -17,17 +17,6 @@ class TaskMemoryRepository(TaskRepository):
         self._last_id += 1
         return self._last_id
 
-    def get_list(self, user_id):
-        u""" タスク一覧を取得する
-
-        :type user_id: int
-        :rtype: list[Task]
-        """
-        assert isinstance(user_id, int)
-        if user_id in self._tasks:
-            return self._tasks[user_id].values()
-        return []
-
     def get(self, user_id, task_id):
         u""" タスクを取得する
 
