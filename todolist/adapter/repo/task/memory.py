@@ -17,31 +17,37 @@ class TaskMemoryRepository(TaskRepository):
         self._last_id += 1
         return self._last_id
 
-    def get_list(self):
+    def get_list(self, user_id):
         u""" タスク一覧を取得する
 
+        :type user_id: int
         :rtype: list[Task]
         """
-        return self._tasks.values()
+        assert isinstance(user_id, int)
+        if user_id in self._tasks:
+            return self._tasks[user_id].values()
+        return []
 
-    def get(self, task_id):
-        u""" タスク一覧を取得する
+    def get(self, user_id, task_id):
+        u""" タスクを取得する
 
+        :type user_id: int
         :type task_id: int
         :rtype: (Task|None)
         """
-        if not isinstance(task_id, int):
-            raise TypeError("task_id should be int")
-        return self._tasks.get(task_id)
+        assert isinstance(user_id, int)
+        assert isinstance(task_id, int)
+        if user_id in self._tasks:
+            return self._tasks[user_id].get(task_id)
+        return None
 
     def save(self, task):
         u""" タスクを保存する
 
         :type task: Task
         """
-        if not isinstance(task, Task):
-            raise TypeError("task should be Task")
-        self._tasks[task.task_id] = task
+        assert isinstance(task, Task)
+        self._tasks.setdefault(task.user_id, {})[task.task_id] = task
 
     def _clear(self):
         u""" 全データを削除(テスト用) """

@@ -10,10 +10,10 @@ class TaskDao(RedisDao):
     counter = RedisString("todolist:task:counter")
 
     # task の一覧をハッシュで保存
-    tasks = RedisHash("todolist:task:tasks")
+    tasks = RedisHash("todolist:task:{user_id}:tasks")
 
     # todo タスクの task_id 一覧
-    todo = RedisSet("todolist:task:todo")
+    todo = RedisSet("todolist:task:{user_id}:todo")
 
     # done タスクの task_id 一覧
-    done = RedisSet("todolist:task:done")
+    done = RedisSet("todolist:task:{user_id}:done")

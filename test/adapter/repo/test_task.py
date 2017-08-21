@@ -28,27 +28,27 @@ class TestTaskRepository(object):
         assert next_id == task_id + 1
 
     def test_create(self, repo):
-        task = Task.create(u"タスク1")
+        task = Task.create(1, u"タスク1")
         assert isinstance(task, Task)
 
-        stored = repo.get(task.task_id)
+        stored = repo.get(1, task.task_id)
         assert stored.task_id == task.task_id
         assert stored.name == task.name
         assert stored.status == task.status
 
     def test_create_and_get_list(self, repo):
         for i in range(10):
-            task = Task.create("task{}".format(i))
+            task = Task.create(1, "task{}".format(i))
 
-        task_list = repo.get_list()
+        task_list = repo.get_list(user_id=1)
         assert len(task_list) == 10
 
     def test_rename(self, repo):
-        task = Task.create(u"タスク1")
+        task = Task.create(1, u"タスク1")
         assert isinstance(task, Task)
 
         task.rename(u"タスク名変更")
 
-        stored = repo.get(task.task_id)
+        stored = repo.get(1, task.task_id)
         assert stored.task_id == task.task_id
         assert stored.name == u"タスク名変更"

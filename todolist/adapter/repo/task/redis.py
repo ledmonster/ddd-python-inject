@@ -24,25 +24,28 @@ class TaskRedisRepository(TaskRepository):
         """
         return self._dao.counter.incr()
 
-    def get_list(self):
+    def get_list(self, user_id):
         u""" タスク一覧を取得する
 
+        :type user_id: int
         :rtype: list[Task]
         """
+        assert isinstance(user_id, int)
         tasks = []
-        json_strs = self._dao.tasks.hgetall()
+        json_strs = self._dao.tasks(user_id=user_id).hgetall()
         values = [json.loads(x.decode('utf-8')) for x in json_strs.values()]
         return [self._from_dict(x) for x in values]
 
-    def get(self, task_id):
-        u""" タスク一覧を取得する
+    def get(self, user_id, task_id):
+        u""" タスクを取得する
 
+        :type user_id: int
         :type task_id: int
         :rtype: (Task|None)
         """
-        if not isinstance(task_id, int):
-            raise TypeError("task_id should be int")
-        json_str = self._dao.tasks.hget(task_id)
+        assert isinstance(user_id, int)
+        assert isinstance(task_id, int)
+        json_str = self._dao.tasks(user_id=user_id).hget(task_id)
         if json_str is None:
             return None
         value = json.loads(json_str.decode('utf-8'))
@@ -53,18 +56,18 @@ class TaskRedisRepository(TaskRepository):
 
         :type task: Task
         """
-        if not isinstance(task, Task):
-            raise TypeError("task should be Task")
+        assert isinstance(task, Task)
         json_str = json.dumps(self._to_dict(task), ensure_ascii=False)
-        self._dao.tasks.hset(task.task_id, json_str)
+        self._dao.tasks(user_id=task.user_id).hset(task.task_id, json_str)
 
     def _from_dict(self, value):
         return Task(
-            value['task_id'], value['name'], TaskStatus(value['status']))
+            value['task_id'], value.get('user_id', 1), value['name'], TaskStatus(value['status']))
 
     def _to_dict(self, task):
         return {
             "task_id": task.task_id,
+            "user_id": task.user_id,
             "name": task.name,
             "status": task.status.value,
         }
@@ -72,4 +75,4 @@ class TaskRedisRepository(TaskRepository):
     def _clear(self):
         u""" 全データを削除(テスト用) """
         self._dao.counter.delete()
-        self._dao.tasks.delete()
+        self._dao.tasks(user_id=1).delete()
