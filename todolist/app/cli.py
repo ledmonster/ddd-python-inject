@@ -27,7 +27,8 @@ def main():
 
 
 @main.command()
-@click.option("--status", type=click.Choice(['all', 'todo', 'done']), default='all')
+@click.option("-s", "--status", type=click.Choice(['all', 'todo', 'done']),
+              default='all')
 def list(status):
     query = inject.instance(TaskQuery)
     user = inject.instance(UserService).get_current_user()
@@ -59,10 +60,13 @@ def add(name):
 def done(task_id):
     repo = inject.instance(TaskRepository)
     user = inject.instance(UserService).get_current_user()
-    task = repo.get(user.user_id, task_id)
+    task = repo.get(task_id)
     if task is None:
         click.echo("task not found: #{}".format(task_id))
-    elif task.status is TaskStatus.todo:
-        task.done()
-        repo.save(task)
-    click.echo(u"[x] #{}: {}".format(task.task_id, task.name))
+    elif task.user_id != user.user_id:
+        click.echo("task not found: #{}".format(task_id))
+    else:
+        if task.status is TaskStatus.todo:
+            task.done()
+            repo.save(task)
+        click.echo(u"[x] #{}: {}".format(task.task_id, task.name))

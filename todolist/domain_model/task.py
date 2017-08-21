@@ -60,10 +60,9 @@ class TaskRepository(object):
         """
 
     @abstractmethod
-    def get(self, user_id, task_id):
+    def get(self, task_id):
         u""" タスクを取得する
 
-        :type user_id: int
         :type task_id: int
         :rtype: (Task|None)
         """

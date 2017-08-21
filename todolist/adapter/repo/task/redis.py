@@ -24,16 +24,14 @@ class TaskRedisRepository(TaskRepository):
         """
         return self._dao.counter.incr()
 
-    def get(self, user_id, task_id):
+    def get(self, task_id):
         u""" タスクを取得する
 
-        :type user_id: int
         :type task_id: int
         :rtype: (Task|None)
         """
-        assert isinstance(user_id, int)
         assert isinstance(task_id, int)
-        json_str = self._dao.tasks(user_id=user_id).hget(task_id)
+        json_str = self._dao.tasks.hget(task_id)
         if json_str is None:
             return None
         value = json.loads(json_str.decode('utf-8'))
@@ -46,7 +44,7 @@ class TaskRedisRepository(TaskRepository):
         """
         assert isinstance(task, Task)
         json_str = json.dumps(self._to_dict(task), ensure_ascii=False)
-        self._dao.tasks(user_id=task.user_id).hset(task.task_id, json_str)
+        self._dao.tasks.hset(task.task_id, json_str)
 
     def _from_dict(self, value):
         return Task(
@@ -65,5 +63,4 @@ class TaskRedisRepository(TaskRepository):
 
     def _clear(self):
         u""" 全データを削除(テスト用) """
-        self._dao.counter.delete()
-        self._dao.tasks(user_id=1).delete()
+        self._redis_client.flushdb()

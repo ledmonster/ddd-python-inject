@@ -31,7 +31,7 @@ class TestTaskRepository(object):
         task = Task.create(1, u"タスク1")
         assert isinstance(task, Task)
 
-        stored = repo.get(1, task.task_id)
+        stored = repo.get(task.task_id)
         assert stored.task_id == task.task_id
         assert stored.name == task.name
         assert stored.status == task.status
@@ -42,6 +42,6 @@ class TestTaskRepository(object):
 
         task.rename(u"タスク名変更")
 
-        stored = repo.get(1, task.task_id)
+        stored = repo.get(task.task_id)
         assert stored.task_id == task.task_id
         assert stored.name == u"タスク名変更"

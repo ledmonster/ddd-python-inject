@@ -9,11 +9,14 @@ class TaskDao(RedisDao):
     # task_id を管理する
     counter = RedisString("todolist:task:counter")
 
-    # task の一覧をハッシュで保存
-    tasks = RedisHash("todolist:task:{user_id}:tasks")
+    # タスクの一覧(ハッシュ)
+    tasks = RedisHash("todolist:task:tasks")
 
-    # todo タスクの task_id 一覧
+    # ユーザのタスクの task_id 一覧
+    user_tasks = RedisSet("todolist:task:{user_id}:tasks")
+
+    # ユーザの todo タスクの task_id 一覧
     todo = RedisSet("todolist:task:{user_id}:todo")
 
-    # done タスクの task_id 一覧
+    # ユーザの done タスクの task_id 一覧
     done = RedisSet("todolist:task:{user_id}:done")

@@ -26,6 +26,16 @@ class TaskQuery(object):
     def __init__(self):
         self._dao = TaskDao(self._redis_client)
 
+    def find_all(self):
+        u""" 全ユーザの全タスク一覧を取得する
+
+        :rtype: list[TaskDto]
+        """
+        tasks = []
+        json_strs = self._dao.tasks.hgetall()
+        values = [json.loads(x.decode('utf-8')) for x in json_strs.values()]
+        return [self._from_dict(x) for x in values]
+
     def find_by_user_id(self, user_id):
         u""" ユーザのタスク一覧を取得する
 
@@ -33,9 +43,12 @@ class TaskQuery(object):
         :rtype: list[TaskDto]
         """
         assert isinstance(user_id, int)
+        keys = self._dao.user_tasks(user_id=user_id).smembers()
         tasks = []
-        json_strs = self._dao.tasks(user_id=user_id).hgetall()
-        values = [json.loads(x.decode('utf-8')) for x in json_strs.values()]
+        if not keys:
+            return []
+        json_strs = self._dao.tasks.hmget(*keys)
+        values = [json.loads(x.decode('utf-8')) for x in json_strs]
         return [self._from_dict(x) for x in values]
 
     def find_todo_by_user_id(self, user_id):
@@ -49,7 +62,7 @@ class TaskQuery(object):
         tasks = []
         if not keys:
             return []
-        json_strs = self._dao.tasks(user_id=user_id).hmget(*keys)
+        json_strs = self._dao.tasks.hmget(*keys)
         values = [json.loads(x.decode('utf-8')) for x in json_strs]
         return [self._from_dict(x) for x in values]
 
@@ -64,13 +77,13 @@ class TaskQuery(object):
         tasks = []
         if not keys:
             return []
-        json_strs = self._dao.tasks(user_id=user_id).hmget(*keys)
+        json_strs = self._dao.tasks.hmget(*keys)
         values = [json.loads(x.decode('utf-8')) for x in json_strs]
         return [self._from_dict(x) for x in values]
 
     def _from_dict(self, value):
         return TaskDto(
             task_id=value['task_id'],
-            user_id=value.get('user_id', 1),
+            user_id=value['user_id'],
             name=value['name'],
             status=TaskStatus(value['status']))

@@ -17,6 +17,7 @@ def update_readmodel(event):
     redis_client = inject.instance(redis.StrictRedis)
     dao = TaskDao(redis_client)
     if isinstance(event, TaskCreated):
+        dao.user_tasks(user_id=event.user_id).sadd(event.task_id)
         dao.todo(user_id=event.user_id).sadd(event.task_id)
     elif isinstance(event, TaskDone):
         dao.done(user_id=event.user_id).sadd(event.task_id)

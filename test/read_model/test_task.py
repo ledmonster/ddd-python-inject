@@ -39,6 +39,19 @@ class TestTaskQuery(object):
         task_list = query.find_by_user_id(user_id=1)
         assert len(task_list) == 10
 
+    def test_two_users(self, repo, query):
+        for i in range(10):
+            task = Task.create(1, "task{}".format(i))
+        for i in range(20):
+            task = Task.create(2, "task{}".format(i))
+
+        task_list = query.find_all()
+        assert len(task_list) == 30
+        task_list = query.find_by_user_id(user_id=1)
+        assert len(task_list) == 10
+        task_list = query.find_by_user_id(user_id=2)
+        assert len(task_list) == 20
+
     def test_find_todo_and_done_by_user_id(self, repo, query):
         tasks = []
         for i in range(10):
