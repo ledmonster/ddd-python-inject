@@ -27,10 +27,16 @@ def main():
 
 
 @main.command()
-def list():
+@click.option("--status", type=click.Choice(['all', 'todo', 'done']), default='all')
+def list(status):
     query = inject.instance(TaskQuery)
     user = inject.instance(UserService).get_current_user()
-    tasks = query.find_by_user_id(user.user_id)
+    if status == 'todo':
+        tasks = query.find_todo_by_user_id(user.user_id)
+    elif status == 'done':
+        tasks = query.find_done_by_user_id(user.user_id)
+    else:
+        tasks = query.find_by_user_id(user.user_id)
     for task in tasks:
         if task.status is TaskStatus.todo:
             click.echo(u"[ ] #{}: {}".format(task.task_id, task.name))
