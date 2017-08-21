@@ -5,7 +5,9 @@ import redis
 
 from todolist.adapter.eventbus import SimpleEventBus
 from todolist.adapter.repo.task import TaskRedisRepository
+from todolist.adapter.user import SimpleUserService
 from todolist.domain_model.task import TaskRepository
+from todolist.domain_model.user import UserService
 from todolist.port.eventbus import EventBus
 
 
@@ -20,4 +22,5 @@ def create_config(params):
             params['redis_host'], params['redis_port'], params['redis_db']))
         binder.bind_to_constructor(EventBus, SimpleEventBus)
         binder.bind_to_constructor(TaskRepository, TaskRedisRepository)
+        binder.bind_to_constructor(UserService, SimpleUserService)
     return config
