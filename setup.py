@@ -8,6 +8,7 @@ setup(
     packages=find_packages(),
     install_requires=[
         "click",
+        "enum34",
         "inject",
         "gxredis",
         "pytest",
